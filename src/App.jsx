@@ -15,7 +15,7 @@ function App() {
       <Navbar/>
       <Routes>
       <Route path='/'element={<View/>}></Route>
-      <Route path='/add'element={<Add/>}></Route>
+      <Route path='/add'element={<Add person={{mname:'',mdesc:'',mdir:''}}/>}></Route>
       </Routes>
 
       
