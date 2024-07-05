@@ -1,6 +1,7 @@
 import { Box, Button, Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const bull = (
     <Box
@@ -13,13 +14,27 @@ const bull = (
   
 export const View = () => {
     //const rows=[{mNo:'Movie1',mName:'Mamma mia!', mdesc:'Musical/Comedy',mdirector:'Phyllida LLoyd'},{mNo:'Movie2',mName:'Get Out',mdesc:'Horror/Comedy',mdirector:'Jordan Peele'}]
-    const [rows,setRows]=useState([])
+    const [rows,setRows]=useState([]);
+    var navigate=useNavigate()
     useEffect(()=>{
-      axios.get('https://dummyapi.online/api/movies').then((res)=>{
-        
+      axios.get('http://localhost:4000/movie').then((res)=>{
+        console.log(res);
         setRows(res.data)
       })
 },[])
+function del_value(p){
+  axios.delete('http://localhost:4000/removemovie/'+p).then((res)=>{
+    alert('Data deleted');
+    window.location.reload()
+  }).catch((error)=>{
+    console.log(error)
+  })
+}
+function update_value(val){
+  navigate('/add',{state:{val}})
+
+    
+}
     return (
         <>
     {rows.map((item)=> (
@@ -34,20 +49,25 @@ export const View = () => {
           /> */}
       <CardContent>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          Movie id:{item.id}
+          Movie name:{item.movieName}
         </Typography>
         <Typography variant="h5" component="div">
-          {item.movie}
+          {item.movieDescription}
         </Typography>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          Rating:{item.rating}
+          {item.movieDirector}
         </Typography>
-        <Typography variant="body2">
+        {/* <Typography variant="body2">
               <a href={item.imdb_url} target="_blank">IMDB Link</a>
-            </Typography>
+            </Typography> */}
       </CardContent>
       <CardActions>
-        <Button size="small">Learn More</Button>
+        <Button variant="contained" size="small" onClick={()=>{
+          update_value(item)
+  }}>Update</Button>
+        <Button variant="contained" size="small" onClick={()=>{
+          del_value(item._id)
+        }}>Delete</Button>
       </CardActions>
     </Card>
     ))}
